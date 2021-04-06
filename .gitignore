@@ -1,0 +1,17 @@
+Meta
+doc
+.DS_Store
+.Ruserdata
+.Rhistory
+.Rapp.history
+.RDataTmp
+.RData
+/.Rproj.user
+
+**.gz
+**.qs
+**.tsv
+**.csv
+/data
+
+
