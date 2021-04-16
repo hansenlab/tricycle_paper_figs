@@ -35,7 +35,7 @@ pca.celltype.p <- plotEmbScat(sce.o = endo.o, dimred = "go.pca",
 ### ductal
 GO_Ductal.o <- getGO(endo_full.o[, endo_full.o$cell_type == "Ductal"], row.id = rownames(endo_full.o), id.type = "SYMBOL", runSeuratBy =  NULL)
 plot(reducedDim(GO_Ductal.o, "PCA.s"))
-
+metadata(GO_Ductal.o)$point.size <- 4.5
 
 ductal.pca.p <- plotScatCC(sce.o = GO_Ductal.o, dimred = "PCA.s", 
 					 x_lab = str_c("PC1", sprintf(" (%i%%)", round(attr(reducedDim(GO_Ductal.o, "PCA.s"), "percentVar")[1]))),

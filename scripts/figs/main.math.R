@@ -53,7 +53,7 @@ imp <- summary(pca)$importance
 tmp.df <- data.frame(x = pca$x[,1], y = pca$x[,2])
 c.p <- ggplot(tmp.df, aes(x =x, y = y)) +
 	geom_scattermore(shape = 1, pointsize = 4.01, alpha = 0.7) +
-	labs(title = "Inference of the time order", x = sprintf("PC1 (%2.1f%%)", imp[2,1]*100), y = sprintf("PC1 (%2.1f%%)", imp[2,2]*100)) +
+	labs(title = "Inference of the time order", x = sprintf("PC1 (%2.1f%%)", imp[2,1]*100), y = sprintf("PC2 (%2.1f%%)", imp[2,2]*100)) +
 	annotate("point", x = 0, 
 					 y = 0, shape = 16, size = 1, alpha = 0.8) + 
 	annotate("segment", x = 0, xend =  4 ,
