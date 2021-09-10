@@ -15,8 +15,8 @@ reducedDim(neurosphere.o, "common") <- project_cycle_space(assay(neurosphere_ful
 reducedDim(hipp.o, "common") <- project_cycle_space(assay(hipp_full.o, "log.s"), ref.m = metadata(neurosphere.o)$rotation[common_genes.v, ])
 
 
-neurosphere.p <- plotScatCC(neurosphere.o, dimred = "common", x_lab = px_lab, y_lab = py_lab, title = str_c(metadata(neurosphere.o)$dataname, " projected by mNeurosphere\n(", length(common_genes.v)," common genes)"))
-hipp.p <- plotScatCC(hipp.o, dimred = "common", x_lab = px_lab, y_lab = py_lab, title = str_c(metadata(hipp.o)$dataname, " projected by mNeurosphere\n(", length(common_genes.v)," common genes)"))
+neurosphere.p <- plotEmbScatCyclic(neurosphere.o, dimred = "common", x_lab = px_lab, y_lab = py_lab, title = str_c(metadata(neurosphere.o)$dataname, " projected by mNeurosphere\n(", length(common_genes.v)," common genes)"))
+hipp.p <- plotEmbScatCyclic(hipp.o, dimred = "common", x_lab = px_lab, y_lab = py_lab, title = str_c(metadata(hipp.o)$dataname, " projected by mNeurosphere\n(", length(common_genes.v)," common genes)"))
 
 ### neuro_projection
 

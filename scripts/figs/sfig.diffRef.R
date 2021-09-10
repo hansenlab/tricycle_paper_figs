@@ -35,7 +35,7 @@ hipp.proj.p <- plotScatCC(hipp.o, dimred = "hippP", x_lab = px_lab2, y_lab = py_
 mRetina.proj.p <- plotScatCC(mRetina.o, dimred = "hippP", x_lab = px_lab2, y_lab = py_lab2, title = str_c(metadata(mRetina.o)$dataname, " projected by mHippNPC"))
 
 
-plotTwoTheta <- function(sce.o, x_lab, y_lab, x_var, y_var, color.var = "CCStage", color.name = "CC Stage", colors.v = NULL, labels.v = NULL, title = NULL) {
+plotTwoTheta <- function(sce.o, x_lab, y_lab, x_var, y_var, color.var = "CCStage", color.name = "SchwabeCC", colors.v = NULL, labels.v = NULL, title = NULL) {
 	if (is.null(title)) title <- str_c( metadata(sce.o)$dataname, " (n=", ncol(sce.o), ")")
 	if (is.null(colors.v)) colors.v <- ccColors.v
 	if (is.null(labels.v)) labels.v <- ccLabels.v

@@ -12,8 +12,8 @@ na.omit(match(c("CDK1", "UBE2C",   "SMC2", "SMC4", "UBE2S", "CKAP2", "MCM6", "HE
 
 SelGenes.lp <- do.call(c, lapply(c("CDK1", "UBE2C",   "SMC2", "SMC4", "UBE2S", "CKAP2", "MCM6", "HELLS"), function(g) {
 	colData(hiPSCs.o)[, g] <- assay(hiPSCs_full.o, "log.s")[match(g, rowData(hiPSCs_full.o)$Gene), ]
-	p1 <- plotLoess(sce.o = hiPSCs.o, col.name = g, x_val = "tricyclePosition", col.outname = g, addR2 = TRUE, r2size = 2.5) + theme(legend.position = "none")
-	p2 <- plotLoess(sce.o = hiPSCs.o, col.name = g,  x_val = "Hsiao.theta", x_lab = "FUCCI pseudotime", col.outname = g, addR2 = TRUE, r2size = 2.5)  + theme(legend.position = "none")
+	p1 <- plotLoess3(sce.o = hiPSCs.o, col.name = g, x_val = "tricyclePosition", col.outname = g, addR2 = TRUE, r2size = 2.5) + theme(legend.position = "none")
+	p2 <- plotLoess3(sce.o = hiPSCs.o, col.name = g,  x_val = "Hsiao.theta", x_lab = "FUCCI pseudotime", col.outname = g, addR2 = TRUE, r2size = 2.5)  + theme(legend.position = "none")
 	return(list(p1, p2))
 }))
 

@@ -10,12 +10,12 @@ HeLa2.o <- qread(here::here("data/plotdata/HeLa2.qs"))
 mRetina.o <- qread(here::here("data/plotdata/mRetina.qs"))
 
 
-hipp.smc4.p <- plotLoess(hipp.o, "smc4")
-endo.smc4.p <- plotLoess(endo.o, "smc4")
-mHSC.smc4.p <- plotLoess(mHSC.o, "smc4")
-HeLa1.smc4.p <- plotLoess(HeLa1.o, "smc4")
-HeLa2.smc4.p <- plotLoess(HeLa2.o, "smc4")
-mRetina.smc4.p <- plotLoess(mRetina.o, "smc4")
+hipp.smc4.p <- plotLoess2(hipp.o, "smc4")
+endo.smc4.p <- plotLoess2(endo.o, "smc4")
+mHSC.smc4.p <- plotLoess2(mHSC.o, "smc4")
+HeLa1.smc4.p <- plotLoess2(HeLa1.o, "smc4")
+HeLa2.smc4.p <- plotLoess2(HeLa2.o, "smc4")
+mRetina.smc4.p <- plotLoess2(mRetina.o, "smc4")
 
 
 mp <- plot_grid(hipp.smc4.p + theme(legend.position = c(1, 1),

@@ -12,7 +12,7 @@ p1 <- plot_emb_circle_scale(sce.o, dimred = 2, fig.title = str_c("Human fetal ",
 
 tmp.df <- data.frame(x = reducedDim(sce.o, "umap")[, 1], y = reducedDim(sce.o, "umap")[, 2], color = factor(sce.o$cc))
 tmp.df$color <- fct_explicit_na(tmp.df$color, na_level = "NA") %>% fct_relevel("NA", after = Inf)
-scale_color <- scale_color_manual(values = c(ccColors.v, "grey"), name = "CC Stage", labels =  c(ccLabels.v, "NA"), limits =   c(ccLabels.v, "NA"))
+scale_color <- scale_color_manual(values = c(ccColors.v, "grey"), name = "SchwabeCC", labels =  c(ccLabels.v, "NA"), limits =   c(ccLabels.v, "NA"))
 
 p2 <- ggplot(tmp.df, aes(x = x, y = y, color = color)) +
 	geom_scattermore(data = tmp.df %>% dplyr::filter(`color` == "NA"), pointsize = 2.01,  alpha = 0.6) +

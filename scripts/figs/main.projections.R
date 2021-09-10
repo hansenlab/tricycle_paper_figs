@@ -9,16 +9,16 @@ mRetina.o <- qread(here::here("data/plotdata/mRetina.qs"))
 
 metadata(endo.o)$point.size <- 4.01
 
-hipp.scat.p <- plotCirclePlotProjection(hipp.o, r = 3, label.x = 2, label.y = 0.5)
-endo.scat.p <- plotCirclePlotProjection(endo.o, r = 2, label.x = 1.8, label.y = 0.5)
-mRetina.scat.p <- plotCirclePlotProjection(mRetina.o, r = 3, label.x = 2.5, label.y = 0.8)
-HeLa2.scat.p <- plotCirclePlotProjection(HeLa2.o, r = 4, label.x = 3.7, label.y = 1)
+hipp.scat.p <- plotCirclePlotProjection2(hipp.o, r = 3, label.x = 2, label.y = 0.5)
+endo.scat.p <- plotCirclePlotProjection2(endo.o, r = 2, label.x = 1.8, label.y = 0.5)
+mRetina.scat.p <- plotCirclePlotProjection2(mRetina.o, r = 3, label.x = 2.5, label.y = 0.8)
+HeLa2.scat.p <- plotCirclePlotProjection2(HeLa2.o, r = 4, label.x = 3.7, label.y = 1)
 
 
-hipp.top2a.p <- plotLoess(hipp.o, "top2a", col.outname = "Top2A", title = str_c( metadata(hipp.o)$dataname, " Top2A"), y_lab = bquote(paste('log'['2'],'(expression)')))
-endo.top2a.p <- plotLoess(endo.o, "top2a", col.outname = "Top2A", title = str_c( metadata(endo.o)$dataname, " Top2A"), y_lab = bquote(paste('log'['2'],'(expression)')))
-mRetina.top2a.p <- plotLoess(mRetina.o, "top2a", col.outname = "Top2A", title = str_c( metadata(mRetina.o)$dataname, " Top2A"), y_lab = bquote(paste('log'['2'],'(expression)')))
-HeLa2.top2a.p <- plotLoess(HeLa2.o, "top2a", title = str_c( metadata(HeLa2.o)$dataname, " TOP2A"), y_lab = bquote(paste('log'['2'],'(expression)')))
+hipp.top2a.p <- plotLoess2(hipp.o, "top2a", col.outname = "Top2A", title = str_c( metadata(hipp.o)$dataname, " Top2A"), y_lab = bquote(paste('log'['2'],'(expression)')))
+endo.top2a.p <- plotLoess2(endo.o, "top2a", col.outname = "Top2A", title = str_c( metadata(endo.o)$dataname, " Top2A"), y_lab = bquote(paste('log'['2'],'(expression)')))
+mRetina.top2a.p <- plotLoess2(mRetina.o, "top2a", col.outname = "Top2A", title = str_c( metadata(mRetina.o)$dataname, " Top2A"), y_lab = bquote(paste('log'['2'],'(expression)')))
+HeLa2.top2a.p <- plotLoess2(HeLa2.o, "top2a", title = str_c( metadata(HeLa2.o)$dataname, " TOP2A"), y_lab = bquote(paste('log'['2'],'(expression)')))
 
 
 hipp.cyclic.p <- plotEmbScatCyclic(sce.o = hipp.o, dimred = "umap", 
@@ -38,21 +38,21 @@ mp <- plot_grid(hipp.scat.p +  theme(legend.position = "none") ,
 								# 												legend.justification = c(1, 1),
 								# 											 legend.key = element_blank(),
 								# 											 legend.key.size = unit(7, "pt")),
-								endo.scat.p + theme(legend.position = "none"), 
+								endo.scat.p + theme(legend.position = "none", plot.title = element_text(face = "plain", size = 7.5, hjust = 0.5)), 
 								mRetina.scat.p + theme(legend.position = "none"), 
 								HeLa2.scat.p + theme(legend.position = "none"), 
-								get_legend(hipp.scat.p),
+								ggplot() + theme_nothing(),
 								hipp.top2a.p + theme(legend.position = "none"), 
 								endo.top2a.p + theme(legend.position = "none"), 
 								mRetina.top2a.p + theme(legend.position = "none"), 
 								HeLa2.top2a.p + theme(legend.position = "none"), 
-								get_legend(hipp.top2a.p),
+								circle_scale_legend(text.size = 1.8, y.inner =  0.9, ymax = 4.5, y.outer = 2.1, y.text = 3.3),
 								hipp.cyclic.p + theme(legend.position = "none"), 
 								endo.cyclic.p + theme(legend.position = "none"), 
 								mRetina.cyclic.p + theme(legend.position = "none"), 
 								HeLa2.cyclic.p + theme(legend.position = "none"), 
-								circle_scale_legend(text.size = 1.8, ymax = 4.5, y.outer = 2.5, y.text = 3.1),
-								nrow = 3, ncol = 5, rel_widths = c(1, 1, 1, 1, 0.4), labels = c("a", rep("", 4), "b", rep("", 4), "c", rep("", 4)))
+								ggplot() + theme_nothing(),
+								nrow = 3, ncol = 5, rel_widths = c(1, 1, 1, 1, 0.45), labels = c("a", rep("", 4), "b", rep("", 4), "c", rep("", 4)))
 
 
 save_plot(here::here("figs", "main", "main.projections.pdf"), mp,

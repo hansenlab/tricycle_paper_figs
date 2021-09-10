@@ -4,7 +4,7 @@ source(here::here("scripts/utils.R"))
 mRetina.o <- qread(here::here("data/plotdata/mRetina.qs"))
 
 
-projection.day.lp <- plotEmbScat(mRetina.o, dimred = "tricycleEmbedding", color_by = "CCStage", color.name = "CC Stage", labels.v = ccLabels.v,colors.v  = ccColors.v, facet_by = "age",  x_lab = px_lab, y_lab = py_lab)
+projection.day.lp <- plotEmbScat(mRetina.o, dimred = "tricycleEmbedding", color_by = "CCStage", color.name = "SchwabeCC", labels.v = ccLabels.v,colors.v  = ccColors.v, facet_by = "age",  x_lab = px_lab, y_lab = py_lab)
 
 
 projection.day.lp <- lapply(projection.day.lp, function(x) x + theme(legend.position = "none"))

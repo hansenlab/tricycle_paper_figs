@@ -76,7 +76,7 @@ plotPct0Box <- function(sce.o, title = NULL) {
 		scale_color_manual(values = c(ccColors.v, "grey60"), name = "Schwabe", labels = c(ccLabels.v, "NA")) +
 		scale_fill_manual(values = c("white", "grey90"), name = "Flag") + 
 		# geom_quasirandom(width = 0.08, size = 0.2, shape = 16, alpha = 0.5, dodge.width = 0.8) +
-		scale_x_discrete(name = "CC Stage", labels = str_c(levels(tmp.df$cc), "\n(n=", table(tmp.df$cc), ")")) +
+		scale_x_discrete(name = "SchwabeCC", labels = str_c(levels(tmp.df$cc), "\n(n=", table(tmp.df$cc), ")")) +
 		labs( y =  "Pct of 0 (projection genes)",  title = title) +
 		theme(axis.text.x = element_text(size = 6,  vjust = 0.5, hjust = 0.5, angle = 30),
 					axis.title.x = element_blank())
@@ -105,7 +105,7 @@ plotGeneBox <- function(sce.o, col.name, col.outname = NULL, title = NULL) {
 		scale_color_manual(values = c(ccColors.v, "grey60"), name = "Schwabe", labels = c(ccLabels.v, "NA")) +
 		scale_fill_manual(values = c("white", "grey90"), name = "Flag") + 
 		# geom_quasirandom(width = 0.08, size = 0.2, shape = 16, alpha = 0.5, dodge.width = 0.8) +
-		scale_x_discrete(name = "CC Stage", labels = str_c(levels(tmp.df$cc), "\n(n=", table(tmp.df$cc), ")")) +
+		scale_x_discrete(name = "SchwabeCC", labels = str_c(levels(tmp.df$cc), "\n(n=", table(tmp.df$cc), ")")) +
 		labs( y = bquote(paste('log'['2'],'(expression of ', .(col.outname), ")")),  title = title) +
 		theme(axis.text.x = element_text(size = 6,  vjust = 0.5, hjust = 0.5, angle = 30),
 					axis.title.x = element_blank())

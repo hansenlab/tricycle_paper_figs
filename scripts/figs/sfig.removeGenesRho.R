@@ -46,7 +46,7 @@ Rho_neurospheres.box.p <- ggplot(tmp.df, aes(x = g.n, y = rho)) +
 	geom_quasirandom(width = 0.2, size = 0.6, shape = 16, alpha = 0.5) +
 	labs( y = "Circular correlation \u03C1", 
 				x = "Number of genes retianed in the mNeurosphere reference", 
-				title = str_c("Tolerance of removing genes \nfrom the mNeuroshoere reference")) +
+				title = str_c("Tolerance of removing genes \nfrom the mNeurosphere reference")) +
 	scale_x_discrete(labels = as.character(seq(from = 450, to = 50, length.out = 9))) +
 	scale_y_continuous(breaks = c(0, 0.25, 0.5, 0.75, 1), labels = c(0, 0.25, 0.5, 0.75, 1), limits = c(min(tmp.df$rho, 0), max(tmp.df$rho, 1)))
 

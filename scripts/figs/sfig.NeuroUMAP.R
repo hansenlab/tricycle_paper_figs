@@ -12,7 +12,7 @@ umap.celltype.scat.p <- plotEmbScat(sce.o = neurosphere.o, dimred = "umap",  x_l
 															 labels.v = c("aNSCs", "Astrocytes", "NPCs", "Oligodendrocytes", "qNSCs", "Other"), color.name = 'Cell type')
 umap.cc.scat.p <- plotEmbScat(sce.o = neurosphere.o, dimred = "umap",  x_lab = "UMAP-1", y_lab = "UMAP-2",
 																		color_by = "CCStage", colors.v = ccColors.v,
-																		labels.v = ccLabels.v, color.name = 'CC Stage')
+																		labels.v = ccLabels.v, color.name = 'SchwabeCC')
 umap.cyclone.scat.p <- plotEmbScat(sce.o = neurosphere.o, dimred = "umap",  x_lab = "UMAP-1", y_lab = "UMAP-2",
 															color_by = "cyclone", colors.v = cc3Colors.v,
 															labels.v = cc3Labels.v, color.name = 'Cyclone')

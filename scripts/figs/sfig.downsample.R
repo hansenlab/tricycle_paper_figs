@@ -24,7 +24,7 @@ p.l <- lapply(c(1, 0.8, 0.6, 0.4, 0.2, 0.1), function(prop) {
 	log.m <- normalizeCounts(counts.m, log=TRUE)
 	reducedDim(hipp.o, "new") <- project_cycle_space(log.m, ref.m = ref.m)
 	if (prop == 1) {
-		scat.p <- plotScatCC(sce.o = hipp.o, dimred = "tricycleEmbedding", x_lab = px_lab, y_lab = py_lab, title = str_c(metadata(hipp.o)$dataname, "\n(original; lib.size median:",format(median.v, digits = 2), ")")) + theme(legend.position = "none")
+		scat.p <- plotEmbScatCyclic(sce.o = hipp.o, dimred = "tricycleEmbedding", x_lab = px_lab, y_lab = py_lab, title = str_c(metadata(hipp.o)$dataname, "\n(original; lib.size median:",format(median.v, digits = 2), ")")) + theme(legend.position = "none")
 		
 		
 		tmp.df <- data.frame(x = reducedDim(hipp.o, "new")[, 1],
@@ -46,7 +46,7 @@ p.l <- lapply(c(1, 0.8, 0.6, 0.4, 0.2, 0.1), function(prop) {
 		return(list(scat.p = scat.p, theta.p = NULL, umi.p = umi.p, proj = reducedDim(hipp.o, "tricycleEmbedding")[, 1:2], median.v = median.v))
 	}
 	
-	scat.p <- plotScatCC(sce.o = hipp.o, dimred = "new", x_lab = px_lab, y_lab = py_lab, title = str_c(metadata(hipp.o)$dataname, "\n(downsampled; lib.size median:", format(median.v, digits = 2), ")")) + theme(legend.position = "none")
+	scat.p <- plotEmbScatCyclic(sce.o = hipp.o, dimred = "new", x_lab = px_lab, y_lab = py_lab, title = str_c(metadata(hipp.o)$dataname, "\n(downsampled; lib.size median:", format(median.v, digits = 2), ")")) + theme(legend.position = "none")
 	
 	tmp.df <- data.frame(x = reducedDim(hipp.o, "new")[, 1],
 											 y = reducedDim(hipp.o, "new")[, 2],
@@ -57,11 +57,13 @@ p.l <- lapply(c(1, 0.8, 0.6, 0.4, 0.2, 0.1), function(prop) {
 	tmp.df$color <- fct_explicit_na(tmp.df$color, na_level = "NA") %>% fct_relevel("NA", after = Inf)
 	
 	
-	theta.p <- ggplot(tmp.df, aes(x = theta, y = new, color = color)) +
+	theta.p <- ggplot(tmp.df, aes(x = theta, y = new, color = theta)) +
 		geom_scattermore(data = tmp.df %>% dplyr::filter(`color` == "NA"), pointsize  = metadata(hipp.o)$point.size, alpha = metadata(hipp.o)$point.alpha) +
 		geom_scattermore(data = tmp.df %>% dplyr::filter(`color` != "NA"), pointsize  = metadata(hipp.o)$point.size, alpha = metadata(hipp.o)$point.alpha) +
-		scale_color_manual(values = c(ccColors.v, "grey"), name = "CC Stage", labels =  c(ccLabels.v, "NA"), limits =   c(ccLabels.v, "NA")) +
-		guides(color = guide_legend(override.aes = list(alpha = 1, size = 1))) +
+		scale_color_gradientn(name = NULL, limits = range(0, 2 * pi), 
+													breaks = seq(from = 0, to = 2 * pi, length.out = 500) ,
+													colors = c("#2E22EA","#9E3DFB","#F86BE2","#FCCE7B","#C4E416","#4BBA0F","#447D87","#2C24E9"), 
+													guide = FALSE) +
 		labs( 	x = bquote(paste('CC'['ns']," Position \u03B8 (original)")), 
 					 y = bquote(paste('CC'['ns']," Position \u03B8 (downsampled)")),
 					 title = str_c(metadata(hipp.o)$dataname, "\n(downsampled; lib.size median:", format(median.v, digits = 2), ")")) +

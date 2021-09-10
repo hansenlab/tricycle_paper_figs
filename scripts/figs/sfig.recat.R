@@ -75,7 +75,7 @@ plot_mean <- function (sce.o, title= NULL)
 	return(p)
 }
 
-plotGenereCAT <- function(sce.o, col.name = "top2a", col.outname = NULL, title = NULL, color.var = "CCStage", color.name = "CC Stage", colors.v = NULL, labels.v = NULL) {
+plotGenereCAT <- function(sce.o, col.name = "top2a", col.outname = NULL, title = NULL, color.var = "CCStage", color.name = "SchwabeCC", colors.v = NULL, labels.v = NULL) {
 	point.size <- metadata(sce.o)$point.size
 	point.alpha <- metadata(sce.o)$point.alpha
 	
@@ -102,18 +102,16 @@ plotGenereCAT <- function(sce.o, col.name = "top2a", col.outname = NULL, title =
 	} else {
 		scale_color <- scale_color_manual(values = colors.v, name = color.name, labels = labels.v, limits = labels.v)
 	}
-	p <- ggplot(tmp.df, aes(x = x, y = y, color = color)) +
-		geom_scattermore(data = tmp.df %>% dplyr::filter(`color` == "NA"), pointsize = point.size, alpha = point.alpha) +
-		geom_scattermore(data = tmp.df %>% dplyr::filter(`color` != "NA"), pointsize = point.size, alpha = point.alpha) +
+	p <- ggplot(tmp.df, aes(x = x, y = y)) +
+		geom_scattermore(data = tmp.df %>% dplyr::filter(`color` == "NA"), pointsize = point.size, alpha = point.alpha, color = "grey") +
+		geom_scattermore(data = tmp.df %>% dplyr::filter(`color` != "NA"), pointsize = point.size, alpha = point.alpha, color = "grey") +
 		geom_smooth(aes(x = x, y = y), inherit.aes = FALSE, method = "loess", se = FALSE, color = "black", linetype = "dashed", size = 0.8, alpha = 0.8) +
-		scale_color +
-		guides(color = guide_legend(override.aes = list(alpha = 1, size = 1))) + 
 		labs( x = "reCAT Time Series (t)", y = bquote(paste('log'['2'],'(expression of ', .(col.outname), ")")), title = title) 
 	
 	return(p)
 }
 
-plotreCATTheta <- function(sce.o, title = NULL, color.var = "CCStage", color.name = "CC Stage", colors.v = NULL, labels.v = NULL) {
+plotreCATTheta <- function(sce.o, title = NULL, color.var = "CCStage", color.name = "SchwabeCC", colors.v = NULL, labels.v = NULL) {
 	point.size <- metadata(sce.o)$point.size
 	point.alpha <- metadata(sce.o)$point.alpha
 
@@ -131,34 +129,31 @@ plotreCATTheta <- function(sce.o, title = NULL, color.var = "CCStage", color.nam
 		scale_color <- scale_color_manual(values = colors.v, name = color.name, labels = labels.v, limits = labels.v)
 	}
 	
-	p <- ggplot(data = tmp.df , aes(x = x, y = y , color = color)) +
-		geom_scattermore(data = tmp.df %>% dplyr::filter(`color` == "NA"), pointsize = point.size, alpha = point.alpha) +
-		geom_scattermore(data = tmp.df %>% dplyr::filter(`color` != "NA"), pointsize = point.size, alpha = point.alpha) +
-		# geom_rug(sides="b", alpha = 0.5, size = 0.05) +
-		scale_color +
-		guides(color = guide_legend(override.aes = list(alpha = 1, size = 1))) + 
+	p <- ggplot(data = tmp.df , aes(x = x, y = y )) +
+		geom_scattermore(data = tmp.df %>% dplyr::filter(`color` == "NA"), pointsize = point.size, alpha = point.alpha, color = "grey") +
+		geom_scattermore(data = tmp.df %>% dplyr::filter(`color` != "NA"), pointsize = point.size, alpha = point.alpha, color = "grey") +
 		labs( x = "reCAT Time Series (t)", y = theta_lab, title = title) +
 		scale_y_continuous(breaks = c(0, 0.5, 1, 1.5, 2) * pi, labels = str_c(seq(0, 2, 0.5), "\u03C0"), limits = c(0, 2)* pi) 
 	return(p)
 }
 
 
-recat1.lp <- do.call(c, lapply(list(endo.o, mHSC.o, HeLa1.o, HeLa2.o, hfIntestineSub.o, hU2OS.o, hiPSCs.o), function(sce.o) {
+recat.lp <- do.call(c, lapply(list(endo.o, mHSC.o, HeLa1.o, HeLa2.o, hfIntestineSub.o, hU2OS.o, hiPSCs.o, mESC.o, hESC.o), function(sce.o) {
 	bayes.p <- plot_bayes(sce.o) + theme(legend.position = "none")
 	mean.p <- plot_mean(sce.o) + theme(legend.position = "none")
 	top2a.p <- plotGenereCAT(sce.o) + theme(legend.position = "none")
 	theta.p <- plotreCATTheta(sce.o) + theme(legend.position = "none")
 	list(bayes.p, mean.p, top2a.p, theta.p) 
 }))
-recat2.lp <- do.call(c, lapply(list(mESC.o, hESC.o), function(sce.o) {
-	bayes.p <- plot_bayes(sce.o) + theme(legend.position = "none")
-	mean.p <- plot_mean(sce.o) + theme(legend.position = "none")
-	top2a.p <- plotGenereCAT(sce.o, color.name = "FACS", color.var = "stage", colors.v = cc3Colors.v, labels.v = cc3Labels.v) + theme(legend.position = "none")
-	theta.p <- plotreCATTheta(sce.o, color.name = "FACS", color.var = "stage", colors.v = cc3Colors.v, labels.v = cc3Labels.v) + theme(legend.position = "none")
-	list(bayes.p, mean.p, top2a.p, theta.p) 
-}))
+# recat2.lp <- do.call(c, lapply(list(mESC.o, hESC.o), function(sce.o) {
+# 	bayes.p <- plot_bayes(sce.o) + theme(legend.position = "none")
+# 	mean.p <- plot_mean(sce.o) + theme(legend.position = "none")
+# 	top2a.p <- plotGenereCAT(sce.o, color.name = "FACS", color.var = "stage", colors.v = cc3Colors.v, labels.v = cc3Labels.v) + theme(legend.position = "none")
+# 	theta.p <- plotreCATTheta(sce.o, color.name = "FACS", color.var = "stage", colors.v = cc3Colors.v, labels.v = cc3Labels.v) + theme(legend.position = "none")
+# 	list(bayes.p, mean.p, top2a.p, theta.p) 
+# }))
 
-recat.lp <- c(recat1.lp, recat2.lp)
+# recat.lp <- c(recat1.lp, recat2.lp)
 
 recat.lp[[1]] <- recat.lp[[1]] + theme(legend.position = c(0, 0),
 																								 legend.justification = c(0, 0),
@@ -179,7 +174,11 @@ recat.lp[[31]] <- recat.lp[[31]] + theme(legend.position = c(1, 0),
 
 mp <- plot_grid(plotlist = recat.lp,
 								nrow = 5, ncol = 8,  labels = as.vector(rbind(letters[1:9], rep("", 9), rep("", 9), rep("", 9))), align = "vh", axis = "tblr")
-save_plot(here::here("figs", "sfigs", "sfig.recat.jpg"), mp,
-					base_height = 2, base_width = 2*1.2, nrow = 5, ncol = 8, type = "cairo")
+save_plot(here::here("figs", "sfigs", "sfig.recat.pdf"), mp,
+					base_height = 2, base_width = 2*1.2, nrow = 5, ncol = 8, device = cairo_pdf)
+
+
+
+
 
 

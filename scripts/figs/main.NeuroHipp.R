@@ -26,7 +26,7 @@ getCirclePlot <- function(sce.o, dimred = "go.pca", r, label.x, label.y, label.s
 	cc.p <- ggplot(tmp.df, aes(x = pc1, y = pc2 , color = cc)) +
 		geom_scattermore(data = tmp.df %>% dplyr::filter(`cc` == "NA"), pointsize = point.size,  alpha = point.alpha) +
 		geom_scattermore(data = tmp.df %>% dplyr::filter(`cc` != "NA"), pointsize = point.size,  alpha = point.alpha) +
-		scale_color_manual(values = c(ccColors.v, "grey"), name = "CC Stage", labels =  c(ccLabels.v, "NA"), limits =   c(ccLabels.v, "NA")) +
+		scale_color_manual(values = c(ccColors.v, "grey"), name = "SchwabeCC", labels =  c(ccLabels.v, "NA"), limits =   c(ccLabels.v, "NA")) +
 		guides(color = guide_legend(override.aes = list(alpha = 1, size = 1))) + 
 		annotate("point", x = 0, 
 						 y = 0, shape = 16, size = 0.8, alpha = 0.8) + 

@@ -17,25 +17,25 @@ hU2OS.GMNN.p <- ggplot(data.frame(x = hU2OS.o$fucci_time, y = hU2OS.o$GMNN), aes
 
 
 loess.l <- fit_periodic_loess(theta.v = hU2OS.o$fucci_time.theta, y = hU2OS.o$GMNN)
-hU2OS.GMNN.p <- plotLoess(sce.o = hU2OS.o, col.name = "GMNN", title =  bquote(paste('hU2OS log'['2'],"(GMNN)")), x_val = "fucci_time.theta") +
+hU2OS.GMNN.p <- plotLoess3(sce.o = hU2OS.o, col.name = "GMNN", title =  bquote(paste('hU2OS log'['2'],"(GMNN)")), x_val = "fucci_time.theta", color.var = "fucci_time.theta") +
 	annotate(geom = "text", x = pi, y = 2.5, size = 3, hjust = 0.5, vjust = 0.5,
 					 label = as.character(as.expression(substitute(italic(R)^2~"="~rsquared, list(rsquared = format(loess.l$rsquared, digits = 3))))), parse = TRUE) +
 	scale_x_continuous(breaks = c(0, 0.5, 1, 1.5, 2) * pi, labels = str_c(seq(0, 1, 0.25)), limits = c(0, 2) * pi, name = "FUCCI pseudotime") 
 
 loess.l <- fit_periodic_loess(theta.v = hU2OS.o$fucci_time.theta, y = hU2OS.o$CDT1)
-hU2OS.CDT1.p <- plotLoess(sce.o = hU2OS.o, col.name = "CDT1", title =  bquote(paste('hU2OS log'['2'],"(CDT1)")), x_val = "fucci_time.theta") +
+hU2OS.CDT1.p <- plotLoess3(sce.o = hU2OS.o, col.name = "CDT1", title =  bquote(paste('hU2OS log'['2'],"(CDT1)")), x_val = "fucci_time.theta", color.var = "fucci_time.theta") +
 	annotate(geom = "text", x = pi, y = 1, size = 3, hjust = 0.5, vjust = 0.5,
 					 label = as.character(as.expression(substitute(italic(R)^2~"="~rsquared, list(rsquared = format(loess.l$rsquared, digits = 3))))), parse = TRUE) +
 	scale_x_continuous(breaks = c(0, 0.5, 1, 1.5, 2) * pi, labels = str_c(seq(0, 1, 0.25)), limits = c(0, 2) * pi, name = "FUCCI pseudotime") 
 
 
 loess.l <- fit_periodic_loess(theta.v = hU2OS.o$tricyclePosition, y = hU2OS.o$GMNN)
-hU2OS.GMNN.theta.p <- plotLoess(sce.o = hU2OS.o, col.name = "GMNN", title =  bquote(paste('hU2OS log'['2'],"(GMNN)"))) +
+hU2OS.GMNN.theta.p <- plotLoess3(sce.o = hU2OS.o, col.name = "GMNN", title =  bquote(paste('hU2OS log'['2'],"(GMNN)"))) +
 	annotate(geom = "text", x = pi, y = 2.5, size = 3, hjust = 0.5, vjust = 0.5,
 					 label = as.character(as.expression(substitute(italic(R)^2~"="~rsquared, list(rsquared = format(loess.l$rsquared, digits = 3))))), parse = TRUE)
 
 loess.l <- fit_periodic_loess(theta.v = hU2OS.o$tricyclePosition, y = hU2OS.o$CDT1)
-hU2OS.CDT1.theta.p <- plotLoess(sce.o = hU2OS.o, col.name = "CDT1", title =  bquote(paste('hU2OS log'['2'],"(CDT1)"))) +
+hU2OS.CDT1.theta.p <- plotLoess3(sce.o = hU2OS.o, col.name = "CDT1", title =  bquote(paste('hU2OS log'['2'],"(CDT1)"))) +
 	annotate(geom = "text", x = pi, y = 1, size = 3, hjust = 0.5, vjust = 0.5,
 					 label = as.character(as.expression(substitute(italic(R)^2~"="~rsquared, list(rsquared = format(loess.l$rsquared, digits = 3))))), parse = TRUE)
 

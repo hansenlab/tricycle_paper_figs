@@ -16,10 +16,12 @@ library("qs")
 library("ggridges")
 library("scattermore")
 library("SingleCellExperiment")
+library("scater")
 library("BiocParallel")
 library("circular")
 library("here")
 library("tricycle")
+
 
 
 ### set ggplot theme
@@ -366,6 +368,7 @@ plotEmbScat <- function(sce.o, dimred,
 	}
 	return(scat.p)
 }
+
 plotEmbScatViridis <- function(sce.o, dimred, 
 															 color_by,
 															facet_by = NULL,
@@ -471,7 +474,7 @@ plotEmbScatCyclic <- function(sce.o, dimred,
 	return(scat.p)
 }
 
-plotScatCC <- function(sce.o, dimred, x_lab, y_lab, title = NULL, col.name = "CCStage", color.name = "CC Stage", colors.v = NULL, labels.v = NULL) {
+plotScatCC <- function(sce.o, dimred, x_lab, y_lab, title = NULL, col.name = "CCStage", color.name = "SchwabeCC", colors.v = NULL, labels.v = NULL) {
 	point.size <- metadata(sce.o)$point.size
 	point.alpha <- metadata(sce.o)$point.alpha
 	if(is.null(colors.v)) colors.v <- ccColors.v
@@ -500,7 +503,7 @@ plotScatCC <- function(sce.o, dimred, x_lab, y_lab, title = NULL, col.name = "CC
 }
 
 
-plotCirclePlotProjection <- function(sce.o, r, label.x, label.y,  dimred = NULL, x_lab = NULL, y_lab = NULL, col.name = "CCStage", color.name = "CC Stage", colors.v = NULL, labels.v = NULL,  label.size = 3, title = NULL) {
+plotCirclePlotProjection <- function(sce.o, r, label.x, label.y,  dimred = NULL, x_lab = NULL, y_lab = NULL, col.name = "CCStage", color.name = "SchwabeCC", colors.v = NULL, labels.v = NULL,  label.size = 3, title = NULL) {
 	point.size <- metadata(sce.o)$point.size
 	point.alpha <- metadata(sce.o)$point.alpha
 	if (is.null(title)) title <- str_c( metadata(sce.o)$dataname, " (n=", ncol(sce.o), ")")
@@ -543,8 +546,47 @@ plotCirclePlotProjection <- function(sce.o, r, label.x, label.y,  dimred = NULL,
 	return(cc.p)
 }
 
+plotCirclePlotProjection2 <- function(sce.o, r, label.x, label.y,  dimred = NULL, x_lab = NULL, y_lab = NULL, col.name = "tricyclePosition", color.name = "tricycle", colors.v = NULL, hue.n = 500, label.size = 3, title = NULL) {
+	point.size <- metadata(sce.o)$point.size
+	point.alpha <- metadata(sce.o)$point.alpha
+	if (is.null(title)) title <- str_c( metadata(sce.o)$dataname, " (n=", ncol(sce.o), ")")
+	if(is.null(colors.v)) colors.v <- colors.v <- c("#2E22EA","#9E3DFB","#F86BE2","#FCCE7B","#C4E416","#4BBA0F","#447D87","#2C24E9")
+	
+	if(is.null(x_lab)) x_lab <- px_lab
+	if(is.null(y_lab)) y_lab <- py_lab
+	if(is.null(dimred)) dimred <- "tricycleEmbedding"
+	
+	emb.m <- reducedDim(sce.o, dimred)
+	tmp.df <- data.frame(pc1 = emb.m[, 1], pc2 = emb.m[, 2]) %>% add_column(color = colData(sce.o)[, col.name])
+	scale_color <- scale_color_gradientn(name = color.name, limits = range(0, 2 * pi), 
+																			 breaks = seq(from = 0, to = 2 * pi, length.out = hue.n) ,
+																			 colors = colors.v, 
+																			 guide = FALSE)
+	
+	xlim <- c(min(-r, min(tmp.df$pc1)), max(r, max(tmp.df$pc1)))
+	ylim <- c(min(-r, min(tmp.df$pc2)), max(r, max(tmp.df$pc2)))
+	
+	cc.p <- ggplot(tmp.df, aes(x = pc1, y = pc2 , color = color)) +
+		geom_scattermore(data = tmp.df %>% dplyr::filter(`color` == "NA"), pointsize = point.size,  alpha = point.alpha) +
+		geom_scattermore(data = tmp.df %>% dplyr::filter(`color` != "NA"), pointsize = point.size,  alpha = point.alpha) +
+		scale_color +
+		annotate("point", x = 0, 
+						 y = 0, shape = 16, size = 0.8, alpha = 0.8) + 
+		annotate("segment", x = 0, xend =  r ,
+						 y = 0, yend = 0, linetype = "dashed", alpha = 0.8) + 
+		annotate("segment", x = 0, xend =  cos(pi/6) * r,
+						 y = 0, yend =  sin(pi/6) * r,
+						 linetype = "dashed", alpha = 0.8) +
+		annotate("text",  alpha = 0.8, x = label.x, y = label.y, label = "\u03B8", parse = TRUE, size = label.size) +
+		xlim(xlim) + ylim(ylim) +
+		labs( y = y_lab, 
+					x = x_lab, 
+					title = title) 
+	
+	return(cc.p)
+}
 
-plotLoess <- function(sce.o, col.name, col.outname = NULL, title = NULL, x_val = "tricyclePosition", x_lab = NULL, color.var = "CCStage", color.name = "CC Stage", colors.v = NULL, labels.v = NULL, log2.trans = FALSE, y_lab = NULL, addR2 = FALSE, r2size = 2) {
+plotLoess <- function(sce.o, col.name, col.outname = NULL, title = NULL, x_val = "tricyclePosition", x_lab = NULL, color.var = "CCStage", color.name = "SchwabeCC", colors.v = NULL, labels.v = NULL, log2.trans = FALSE, y_lab = NULL, addR2 = FALSE, r2size = 2) {
 	point.size <- metadata(sce.o)$point.size
 	point.alpha <- metadata(sce.o)$point.alpha
 	if (is.null(col.outname)) {
@@ -584,8 +626,79 @@ plotLoess <- function(sce.o, col.name, col.outname = NULL, title = NULL, x_val =
 	return(p)
 }
 
+plotLoess2 <- function(sce.o, col.name, col.outname = NULL, title = NULL, x_val = "tricyclePosition", x_lab = NULL, color.var = "tricyclePosition", color.name = "tricycle", colors.v = NULL, hue.n = 500, log2.trans = FALSE, y_lab = NULL, addR2 = FALSE, r2size = 2) {
+	point.size <- metadata(sce.o)$point.size
+	point.alpha <- metadata(sce.o)$point.alpha
+	if (is.null(col.outname)) {
+		if (metadata(sce.o)$species == "mouse") col.outname <- str_to_title(col.name)
+		if (metadata(sce.o)$species == "human") col.outname <- str_to_upper(col.name)
+	}
+	
+	if (is.null(title)) title <- str_c( metadata(sce.o)$dataname, " ", col.outname, " (n=", ncol(sce.o), ")")
+	if (is.null(colors.v)) colors.v <- c("#2E22EA","#9E3DFB","#F86BE2","#FCCE7B","#C4E416","#4BBA0F","#447D87","#2C24E9")
+	if (is.null(x_lab)) x_lab <- theta_lab
+	if (is.null(y_lab)) y_lab <- bquote(paste('log'['2'],'(expression of ', .(col.outname), ")"))
+	theta.v <- colData(sce.o)[, x_val]
+	y <- colData(sce.o)[, col.name]
+	if (log2.trans) y <- log2(y)
+	tmp.df <- data.frame(theta = theta.v, color = colData(sce.o)[, color.var], y = y)
+	scale_color <- scale_color_gradientn(name = color.name, limits = range(0, 2 * pi), 
+																			 breaks = seq(from = 0, to = 2 * pi, length.out = hue.n) ,
+																			 colors = colors.v, 
+																			 guide = FALSE)
+	
+	loess.l <- fit_periodic_loess(theta.v = theta.v, y = y)
+	
+	p <- ggplot(data = tmp.df , aes(x = theta , y = y, color = color)) +
+		geom_scattermore(data = tmp.df %>% dplyr::filter(`color` == "NA"), pointsize = point.size, alpha = point.alpha) +
+		geom_scattermore(data = tmp.df %>% dplyr::filter(`color` != "NA"), pointsize = point.size, alpha = point.alpha) +
+		geom_path(data = loess.l$pred.df, aes(x = x , y = y), linetype = "dashed", color = "black", size = 0.8, alpha = 0.6, inherit.aes = FALSE) +
+		scale_color +
+		labs( y = y_lab , x = x_lab, title = title) +
+		scale_x_continuous(breaks = c(0, 0.5, 1, 1.5, 2) * pi, labels =c(0, str_c(seq(0.5, 2, 0.5), "\u03C0")), limits = c(0, 2) * pi) 
+	if (addR2) p <- p + annotate(geom = "text", x = 0, y = .percent_range(tmp.df$y, 1), size = r2size, hjust = 0, vjust = 1,
+															 label = as.character(as.expression(substitute(italic(R)^2~"="~rsquared, list(rsquared = format(loess.l$rsquared, digits = 3))))), parse = TRUE)
+	
+	return(p)
+}
 
-plotGeneRidge <- function(sce.o, col.name, col.outname = NULL, title = NULL,  x_lab = NULL, color.var = "CCStage", color.name = "CC Stage", colors.v = NULL, labels.v = NULL, log2.trans = FALSE, y_lab = NULL) {
+plotLoess3 <- function(sce.o, col.name, col.outname = NULL, title = NULL, x_val = "tricyclePosition", x_lab = NULL, color.var = "tricyclePosition", color.name = "tricycle", colors.v = NULL, hue.n = 500, log2.trans = FALSE, y_lab = NULL, addR2 = FALSE, r2size = 2) {
+	point.size <- metadata(sce.o)$point.size
+	point.alpha <- metadata(sce.o)$point.alpha
+	if (is.null(col.outname)) {
+		if (metadata(sce.o)$species == "mouse") col.outname <- str_to_title(col.name)
+		if (metadata(sce.o)$species == "human") col.outname <- str_to_upper(col.name)
+	}
+	
+	if (is.null(title)) title <- str_c( metadata(sce.o)$dataname, " ", col.outname, " (n=", ncol(sce.o), ")")
+	if (is.null(colors.v)) colors.v <- c("#2E22EA","#9E3DFB","#F86BE2","#FCCE7B","#C4E416","#4BBA0F","#447D87","#2C24E9")
+	if (is.null(x_lab)) x_lab <- theta_lab
+	if (is.null(y_lab)) y_lab <- bquote(paste('log'['2'],'(expression of ', .(col.outname), ")"))
+	theta.v <- colData(sce.o)[, x_val]
+	y <- colData(sce.o)[, col.name]
+	if (log2.trans) y <- log2(y)
+	tmp.df <- data.frame(theta = theta.v, color = colData(sce.o)[, color.var], y = y)
+	scale_color <- scale_color_gradientn(name = color.name, limits = range(0, 2 * pi), 
+																			 breaks = seq(from = 0, to = 2 * pi, length.out = hue.n) ,
+																			 colors = colors.v, 
+																			 guide = FALSE)
+	
+	loess.l <- fit_periodic_loess(theta.v = theta.v, y = y)
+	
+	p <- ggplot(data = tmp.df , aes(x = theta , y = y)) +
+		geom_scattermore(data = tmp.df %>% dplyr::filter(`color` == "NA"), pointsize = point.size, alpha = point.alpha, color = "grey") +
+		geom_scattermore(data = tmp.df %>% dplyr::filter(`color` != "NA"), pointsize = point.size, alpha = point.alpha, color = "grey") +
+		geom_path(data = loess.l$pred.df, aes(x = x , y = y), linetype = "dashed", color = "black", size = 0.8, alpha = 1, inherit.aes = FALSE) +
+		labs( y = y_lab , x = x_lab, title = title) +
+		scale_x_continuous(breaks = c(0, 0.5, 1, 1.5, 2) * pi, labels =c(0, str_c(seq(0.5, 2, 0.5), "\u03C0")), limits = c(0, 2) * pi) 
+	if (addR2) p <- p + annotate(geom = "text", x = 0, y = .percent_range(tmp.df$y, 1), size = r2size, hjust = 0, vjust = 1,
+															 label = as.character(as.expression(substitute(italic(R)^2~"="~rsquared, list(rsquared = format(loess.l$rsquared, digits = 3))))), parse = TRUE)
+	
+	return(p)
+}
+
+
+plotGeneRidge <- function(sce.o, col.name, col.outname = NULL, title = NULL,  x_lab = NULL, color.var = "CCStage", color.name = "SchwabeCC", colors.v = NULL, labels.v = NULL, log2.trans = FALSE, y_lab = NULL) {
 	require(ggridges)
 	point.size <- metadata(sce.o)$point.size
 	point.alpha <- metadata(sce.o)$point.alpha
@@ -626,7 +739,7 @@ plotGeneRidge <- function(sce.o, col.name, col.outname = NULL, title = NULL,  x_
 }
 
 
-plotThetaDen <- function(sce.o, color.var = "CCStage", color.name = "CC Stage", colors.v = NULL, labels.v = NULL, title = NULL, bw = 30, scale = FALSE, addP = FALSE, adjustbw = TRUE) {
+plotThetaDen <- function(sce.o, color.var = "CCStage", color.name = "SchwabeCC", colors.v = NULL, labels.v = NULL, title = NULL, bw = 30, scale = FALSE, addP = FALSE, adjustbw = TRUE) {
 	if (is.null(title)) title <- metadata(sce.o)$dataname
 	if (is.null(colors.v)) colors.v <- ccColors.v
 	if (is.null(labels.v)) labels.v <- ccLabels.v
@@ -694,7 +807,7 @@ plotThetaDen <- function(sce.o, color.var = "CCStage", color.name = "CC Stage", 
 
 
 
-plotSilhouetteBox <- function(sce.o, title = NULL,  color.var = "CCStage", color.name = "CC Stage", colors.v = NULL, labels.v = NULL) {
+plotSilhouetteBox <- function(sce.o, title = NULL,  color.var = "CCStage", color.name = "SchwabeCC", colors.v = NULL, labels.v = NULL) {
 	require(cluster)
 	if (is.null(colors.v)) colors.v <- ccColors.v
 	if (is.null(labels.v)) labels.v <- ccLabels.v

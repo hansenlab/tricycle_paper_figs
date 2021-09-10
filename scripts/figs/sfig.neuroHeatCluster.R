@@ -23,13 +23,13 @@ qsave(loess.ll, file = here::here("data/plotdata/neuro.loess.qs"))
 rank.v <- unlist(lapply(loess.ll, function(x) which.max(x$pred.df$y)))
 
 order.idx <- order(neurosphere.o$pca.theta)
-pheno.df <- data.frame(CCStage = neurosphere.o$CCStage[order.idx],
+pheno.df <- data.frame(SchwabeCC = neurosphere.o$CCStage[order.idx],
 											 "PCA\u03B8.\u03C0" = as.character(c(0.5, 1, 1.5, 2))[as.numeric(cut(neurosphere.o$pca.theta[order.idx], breaks = seq(0, 2 * pi, length.out = 5), include.lowest = TRUE))])
 rownames(pheno.df) <- colnames(data.m)[order.idx]
 heat.p <- pheatmap(data.m[order(rank.v), order.idx], cluster_rows = FALSE, cluster_cols = FALSE, #breaks = seq(from = -.85, to = .85, length.out = 101),
 				 main = str_c("mNeurosphere (n.genes = 500; n.cells=", ncol(neurosphere.o), ")"), show_rownames = FALSE, show_colnames = FALSE, fontsize = 8,
 				 clustering_method = "ward.D2", #clustering_distance_rows = dist.o,  clustering_distance_cols = dist.o,
-				 annotation_col = pheno.df, annotation_colors = list(CCStage = setNames(ccColors.v, ccLabels.v),
+				 annotation_col = pheno.df, annotation_colors = list(SchwabeCC = setNames(ccColors.v, ccLabels.v),
 				 																										"PCA\u03B8.\u03C0" = setNames(brewer.pal(9, "Blues")[c(2, 4, 6, 8)], as.character(c(0.5, 1, 1.5, 2)))),
 				 breaks = seq(-2, 2, length.out = 100),
 				 silent = TRUE,
@@ -101,11 +101,13 @@ mp2 <- plot_grid(neurosphere.all.z.p,
 mp <- plot_grid(heat.p$gtable, mp2,
 								nrow = 1, ncol = 2, labels = c("a", " "), align = "none", axis = "none")
 
-# save_plot(here::here("figs", "sfigs", "sfig.neuroHeatCluster.pdf"), mp,
-# 					base_height = 2, base_width = 2*1.2, nrow = 2, ncol = 4, device = cairo_pdf)
+save_plot(here::here("figs", "sfigs", "sfig.neuroHeatCluster.pdf"), mp,
+					base_height = 2, base_width = 2*1.2, nrow = 2, ncol = 4, device = cairo_pdf)
 
-save_plot(here::here("figs", "sfigs", "sfig.neuroHeatCluster.jpg"), mp,
-					base_height = 2, base_width = 2*1.2, nrow = 2, ncol = 4, type = "cairo")
+
+### something went wrong for pheatmap jpg output - no background. 
+# save_plot(here::here("figs", "sfigs", "sfig.neuroHeatCluster.jpg"), mp,
+# 					base_height = 2, base_width = 2*1.2, nrow = 2, ncol = 4, type = "cairo")
 
 
 
