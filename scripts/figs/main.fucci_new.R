@@ -27,7 +27,7 @@ reducedDim(hU2OS.o, "fucci") <- data.frame(Green530 = hU2OS.o$Green530, Red585 =
 
 
 hU2OS.fucci.p <- plotEmbScatCyclic(hU2OS.o, dimred = "fucci",x_lab = "GMNN-Green530", y_lab = "CDT1-Red585",
-																	 title = str_c( metadata(hU2OS.o)$dataname, " FUCCI scores (n=", ncol(hU2OS.o), ")"))
+																	 title = str_c( metadata(hU2OS.o)$dataname, " FUCCI (n=", ncol(hU2OS.o), ")"))
 
 
 ### move fucci time
@@ -48,7 +48,7 @@ hU2OS.thetapseudotime.p <- ggplot(data.frame(PC1 =  r.theta.v , PC2 = hU2OS.o$fu
 												guide = FALSE) +
 	labs( y = str_c("FUCCI pseudotime"),
 				x = theta_lab,
-				title = str_c(metadata(hU2OS.o)$dataname, " FUCCI pseudotime ~ \u03B8  (n=", ncol(hU2OS.o), ")")) +
+				title = str_c(metadata(hU2OS.o)$dataname, " FUCCI (n=", ncol(hU2OS.o), ")")) +
 	scale_x_continuous(breaks = c(0, 0.5, 1, 1.5, 2) * pi, labels = str_c( (c(0, 0.5, 1, 1.5, 2) + 0.9 - c(0, 0, 0, 2, 2)), "\u03C0"))
 
 
@@ -91,7 +91,7 @@ hU2OS.r2.p <- ggplot(data.frame(y = hU2OSR2.m[, 1], x = hU2OSR2.m[, 2]), aes(x =
 ### hiPSCs figs
 reducedDim(hiPSCs.o, "fucci") <- reducedDim(hiPSCs.o, "fucci")[, c(2, 1)]
 hiPSCs.fucci.p <- plotEmbScatCyclic(hiPSCs.o, dimred = "fucci", y_lab = "CDT1-mCherry", x_lab = "GMNN-EGFP",
-																		title = str_c( metadata(hiPSCs.o)$dataname, " FUCCI scores (n=", ncol(hiPSCs.o), ")"))
+																		title = str_c( metadata(hiPSCs.o)$dataname, " FUCCI (n=", ncol(hiPSCs.o), ")"))
 
 loess.l <- fit_periodic_loess(theta.v = hiPSCs.o$tricyclePosition, y = hiPSCs.o$top2a)
 hiPSCs.top2a.p <- plotLoess2(sce.o = hiPSCs.o, col.name = "top2a", title =  bquote(paste('hiPSCs log'['2'],"(TOP2A)"))) +
@@ -136,7 +136,7 @@ mp <- plot_grid(hU2OS.fucci.p + theme(legend.position = "none"),
 								
 								hU2OS.thetapseudotime.p + theme(legend.position = "none"), 
 								hU2OS.r2.p,
-								circle_scale_legend(),
+								
 								hiPSCs.fucci.p + theme(legend.position = "none"),
 								hiPSCs.top2a.p + theme(legend.position = c(1, 0),
 																			 legend.justification = c(1, 0),
@@ -144,12 +144,13 @@ mp <- plot_grid(hU2OS.fucci.p + theme(legend.position = "none"),
 																			 legend.key.size = unit(6, "pt")),
 								hiPSCs.top2a2.p + theme(legend.position = "none"),
 								hiPSCs.r2.p,
+								circle_scale_legend(ymax = 5.7, y.text = 4.2),
 								# hU2OS.thetaTOP2A.p + theme(legend.position = "none"), 
 								
-								nrow = 2, ncol = 4, label_size = 10, labels = c(letters[1:3], "", "d", "e", "f", "g"), align = "hv", axis = "tblr")
+								nrow = 3, ncol = 3, label_size = 10, labels = c(letters[1:7], ""), align = "hv", axis = "tblr")
 
-save_plot(here::here("figs", "main", "main.fucci2.pdf"), mp,
-					base_height = 2, base_width = 2*1.2, nrow = 2, ncol = 4, device = cairo_pdf)
+save_plot(here::here("figs", "main", "main.fucci.pdf"), mp,
+					base_height = 2 / 1.2, base_width = 2*1.2 / 1.2, nrow = 3, ncol = 3, device = cairo_pdf)
 
 
 
