@@ -18,7 +18,7 @@ simul_negbin <- function(locations, amplitudes, offset, bcv = 0.1, libsize = 200
 		aa * cos(timepoints - dd)
 	}, amplitudes, locations)) + offset
 	libsizes <- rep(libsize, nGenes)
-	lambda_scaled <- sweep(lambda / colSums(lambda), MARGIN = 1, STATS = libsizes, FUN = "*")
+	lambda_scaled <- sweep(t(t(lambda) / colSums(lambda)), MARGIN = 1, STATS = libsizes, FUN = "*")
 	# lambda_scaled <- lambda
 	bcv <- rep(bcv, nGenes)
 	lambda_bcv <- rgamma(nGenes * length(timepoints),
