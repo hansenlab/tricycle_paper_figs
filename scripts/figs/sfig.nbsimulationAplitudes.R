@@ -11,14 +11,14 @@ library(scuttle)
 n_time <- 5000
 timepoints <- seq(from = 0, to = 2*pi, length.out = n_time)
 simul_negbin <- function(locations, amplitudes, offset, bcv = 0.1, libsize = 2000) {
-	## FIXME: no dependency on library size
+
 	stopifnot(length(locations) == length(amplitudes))
 	nGenes <- length(locations)
 	lambda <- t(mapply(function(aa, dd) {
 		aa * cos(timepoints - dd)
 	}, amplitudes, locations)) + offset
-	libsizes <- rep(libsize, nGenes)
-	lambda_scaled <- sweep(t(t(lambda) / colSums(lambda)), MARGIN = 1, STATS = libsizes, FUN = "*")
+	
+	lambda_scaled <- sweep(lambda, MARGIN = 2, STATS = colSums(lambda) / libsize, FUN = "/")
 	# lambda_scaled <- lambda
 	bcv <- rep(bcv, nGenes)
 	lambda_bcv <- rgamma(nGenes * length(timepoints),
