@@ -65,14 +65,14 @@ hU2OSR2.m <- t(sapply(seq_len(nrow(hU2OS_full.o)), function(i) {
 	return(c(theta.r2, fucci.r2))
 }))
 rownames(hU2OSR2.m) <- genes
-idx <- which((hU2OSR2.m[, 1] > 0.6))
-labels.df <- data.frame(hU2OSR2.m[idx, ], label = rownames(hU2OSR2.m)[idx])
+idx <- order(hU2OSR2.m[, 1], decreasing = TRUE)[3]  # which((hU2OSR2.m[, 1] > 0.6)) 
+labels.df <- data.frame(hU2OSR2.m[idx, , drop = FALSE], label = rownames(hU2OSR2.m)[idx])
 names(labels.df) <- c("y", "x", "label")
 
 hU2OS.r2.p <- ggplot(data.frame(y = hU2OSR2.m[, 1], x = hU2OSR2.m[, 2]), aes(x = x, y = y)) +
 	geom_point(shape = 1, size = 0.6) +
 	geom_abline(slope = 1, intercept = 0, size = 0.5, color = "grey", alpha = 0.8, linetype = "dashed") +
-	geom_text_repel(data = labels.df, aes(x = x, y = y, label = label), size = 1.3, segment.size = 0.2, max.overlaps = 30) +
+	geom_text_repel(data = labels.df, aes(x = x, y = y, label = label), size = 2.2, segment.size = 0.2, max.overlaps = 30) +
 	labs( x = bquote(paste("FUCCI pseudotime R"^"2")),
 				y = bquote(paste('CC'['ns']," Position \u03B8", " R"^"2")),
 				title = bquote(paste( "hU2OS R"^"2"))) +
@@ -115,14 +115,14 @@ hiPSCsR2.m <- t(sapply(seq_len(nrow(hiPSCs_full.o)), function(i) {
 	return(c(theta.r2, hsiao.r2))
 }))
 rownames(hiPSCsR2.m) <- genes
-idx <- which((hiPSCsR2.m[, 1] > 0.2) | (hiPSCsR2.m[, 2] > 0.2))
+idx <- which((hiPSCsR2.m[, 1] > 0.4) | (hiPSCsR2.m[, 2] > 0.3))
 labels.df <- data.frame(hiPSCsR2.m[idx, ], label = rownames(hiPSCsR2.m)[idx])
 names(labels.df) <- c("y", "x", "label")
 
 hiPSCs.r2.p <- ggplot(data.frame(y = hiPSCsR2.m[, 1], x = hiPSCsR2.m[, 2]), aes(x = x, y = y)) +
 	geom_point(shape = 1, size = 0.6) +
 	geom_abline(slope = 1, intercept = 0, size = 0.5, color = "grey", alpha = 0.8, linetype = "dashed") +
-	geom_text_repel(data = labels.df, aes(x = x, y = y, label = label), size = 1.3, segment.size = 0.2, max.overlaps = 30) +
+	geom_text_repel(data = labels.df, aes(x = x, y = y, label = label), size = 2.2, segment.size = 0.2, max.overlaps = 30) +
 	labs( x = bquote(paste("FUCCI pseudotime R"^"2")),
 				y = bquote(paste('CC'['ns']," Position \u03B8", " R"^"2")),
 				title = bquote(paste( "hiPSCs R"^"2"))) +
@@ -144,12 +144,17 @@ mp <- plot_grid(hU2OS.fucci.p + theme(legend.position = "none"),
 																			 legend.key.size = unit(6, "pt")),
 								hiPSCs.top2a2.p + theme(legend.position = "none"),
 								hiPSCs.r2.p,
-								circle_scale_legend(ymax = 5.7, y.text = 4.2),
+								
 								# hU2OS.thetaTOP2A.p + theme(legend.position = "none"), 
 								
 								nrow = 3, ncol = 3, label_size = 10, labels = c(letters[1:7], ""), align = "hv", axis = "tblr")
+mp2 <- ggdraw(mp) +
+	draw_plot(circle_scale_legend(text.size = 3, y.inner =  0.7, ymax = 4.5, y.outer = 2.1, y.text = 2.8, addStageLabel = TRUE),
+						0.21, -0.1, 0.57, 0.57, hjust = 0, vjust = 0, halign = 0, valign = 0)
 
-save_plot(here::here("figs", "main", "main.fucci.pdf"), mp,
+
+
+save_plot(here::here("figs", "main", "main.fucci.pdf"), mp2,
 					base_height = 2 / 1.2, base_width = 2*1.2 / 1.2, nrow = 3, ncol = 3, device = cairo_pdf)
 
 

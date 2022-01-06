@@ -66,7 +66,7 @@ tmp.df <- data.frame(pc1.neu = rotation_neurosphere.m[int_rotaGenes.v, 1],
 tmp.df$Gene <- rowData(neurosphere.o)$Gene[match(int_rotaGenes.v, rownames(neurosphere.o))]
 tmp.df %<>% mutate(color1 = (abs(pc1.neu) > 0.1) | (abs(pc1.hipp) > 0.1))
 tmp.df %<>% mutate(color2 = (abs(pc2.neu) > 0.1) | (abs(pc2.hipp) > 0.1))
-tmp1.df <- tmp.df %>% dplyr::filter((abs(pc1.neu) > 0.1) | (abs(pc1.hipp) > 0.1))
+tmp1.df <- tmp.df %>% dplyr::filter((abs(pc1.neu) > 0.12) & (abs(pc1.hipp) > 0.15))
 tmp2.df <- tmp.df %>% dplyr::filter((abs(pc2.neu) > 0.1) | (abs(pc2.hipp) > 0.1))
 
 
@@ -75,7 +75,7 @@ pc1.scat.p <- ggplot(tmp.df, aes(x = pc1.neu, y = pc1.hipp, label = Gene)) +
 	geom_vline(xintercept = 0, size = 0.5, color = "grey", alpha = 0.8, linetype = "dashed") +
 	geom_abline(slope = 1, intercept = 0, size = 0.5, color = "grey", alpha = 0.8, linetype = "dashed") +
 	geom_point(aes(color = color1), size = 0.5,  alpha = 0.4,  shape = 1) +
-	geom_text_repel(data = tmp1.df, size = 1.3, segment.size = 0.2, max.overlaps = 40) +
+	geom_text_repel(data = tmp1.df, size = 2, segment.size = 0.2, max.overlaps = 40) +
 	scale_color_manual(values = c("black", "red"), name = " ", guide = FALSE) +
 	labs( y = "mHippNPC PC1 weights", x = "mNeurosphere PC1 weights", title = str_c("Overlapped genes(n=", length(int_rotaGenes.v), ")")) +
 	annotate(geom = "text", x = -0.2, y = 0.05, hjust = 0, vjust = 1,  label = str_c("PCC == ", format(cor(tmp.df$pc1.neu, tmp.df$pc1.hipp), digits = 2)), parse = TRUE, size = 3)
@@ -127,10 +127,14 @@ smc4.p <- plotLoess2(hipp.o, neurosphere.o, col.name = "smc4", col.outname = "Sm
 umis.p <- plotLoess2(hipp.o, neurosphere.o, col.name = "TotalUMIs", col.outname = "TotalUMIs", log2.trans = TRUE, y_lab = bquote(paste('log'['2'],'(TotalUMIs)')))
 
 
-mp <- plot_grid(pca_neurosphere.p + theme(legend.position = c(0, 1),
-																								legend.justification = c(0, 1),
+mp <- plot_grid(pca_neurosphere.p + ylim(c(-12.5, max(reducedDim(neurosphere.o, "go.pca")[, 2]))) +
+									guides(color = guide_legend(override.aes = list(alpha = 1, size = 0.5), nrow= 2,byrow=TRUE)) +
+									theme(legend.position = c(1, 0),
+																								legend.justification = c(1, 0),
 																								legend.key = element_blank(),
-																								legend.key.size = unit(6.5, "pt"),
+																								legend.key.size = unit(6, "pt"),
+																					legend.title = element_text(size = 6),
+																					legend.text = element_text(size = 6),
 																					axis.title.y = element_text(size = 8),
 																					axis.title.x = element_text(size = 8)) ,
 								pca_hipp.p + theme(legend.position = "none", axis.title.y = element_text(size = 8),
@@ -143,7 +147,9 @@ mp <- plot_grid(pca_neurosphere.p + theme(legend.position = c(0, 1),
 																legend.key.size = unit(6.5, "pt"),
 																legend.spacing.y = unit(-0.5, "pt"),
 																axis.title.y = element_text(size = 8),
-																axis.title.x = element_text(size = 8)),
+																axis.title.x = element_text(size = 8),
+																legend.title = element_text(size = 6),
+																legend.text = element_text(size = 6)),
 								smc4.p + theme(legend.position = "none", axis.title.y = element_text(size = 8),
 															 axis.title.x = element_text(size = 8)),
 								umis.p + theme(legend.position = "none", axis.title.y = element_text(size = 8),

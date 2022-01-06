@@ -57,14 +57,15 @@ pct.p <- ggplot(frac.df, aes(x = Organ, y = freq, color = cycling)) +
 	geom_point() +
 	scale_color_brewer(palette = "Set1", name = "Actively proliferating") +
 	geom_hline(yintercept = 0.5, size = 0.3, linetype = "dashed", alpha = 0.7) +
-	scale_x_discrete(labels = str_c(levels(frac.df$Organ), "\n(n=", table(tmp.df$Organ), ")"), name = "") +
+	scale_x_discrete(labels = str_c(levels(frac.df$Organ)), name = "") +
 	labs(title = "Percentage of actively proliferating cells in human fetal tissue atlas", y = "Percentage") + 
 	ylim(c(0, 1)) +
 	theme(axis.text.x = element_text(size = 5,  vjust = 0.5, hjust = 0.5, angle = 30),
 				legend.position = c(1, 1),
 				legend.justification = c(1, 1),
 				plot.margin = unit(c(5, 5, 6, 6), "pt"),
-				legend.direction="horizontal")
+				legend.direction="horizontal",
+				plot.title = element_blank())
 
 
 
@@ -73,10 +74,11 @@ pct.p <- ggplot(frac.df, aes(x = Organ, y = freq, color = cycling)) +
 mp <- plot_grid(theta.p, pct.p,
 								nrow = 2, ncol = 1, rel_heights = c(1, 0.5), label_size = 10, labels = "auto", align = "v", axis = "lr")
 
-mp <- ggdraw(mp) +
-	draw_plot(circle_scale_legend(text.size = 1.5) + theme(plot.margin = unit(c(0, 0, 0, 0), "pt")), 0.99, 0.95, .2, .15, hjust = 1, vjust = 1)
+mp2 <- ggdraw(mp) +
+	draw_plot(circle_scale_legend(text.size = 1.5, y.inner = 1, addStageLabel = TRUE),
+						1.0, 0.575, .25, .2, hjust = 1, vjust = 1)
 
-save_plot(here::here("figs", "main", "main.fetalatlas.pdf"), mp,
+save_plot(here::here("figs", "main", "main.fetalatlas.pdf"), mp2,
 					base_height = 2, base_width = 2*1.1, nrow = 2.5, ncol = 2, device = cairo_pdf)
 
 

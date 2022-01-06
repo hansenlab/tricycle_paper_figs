@@ -33,29 +33,36 @@ HeLa2.cyclic.p <- plotEmbScatCyclic(sce.o = HeLa2.o, dimred = "umap",
 
 
 
-mp <- plot_grid(hipp.scat.p +  theme(legend.position = "none") ,
+mp <- plot_grid(hipp.scat.p +  theme(legend.position = "none", 
+																		 plot.title = element_text(face = "plain", size = 7.3, hjust = 0.5)) ,
 								# theme(legend.position = c(1, 1),
 								# 												legend.justification = c(1, 1),
 								# 											 legend.key = element_blank(),
 								# 											 legend.key.size = unit(7, "pt")),
-								endo.scat.p + theme(legend.position = "none", plot.title = element_text(face = "plain", size = 7.5, hjust = 0.5)), 
-								mRetina.scat.p + theme(legend.position = "none"), 
+								endo.scat.p + theme(legend.position = "none", plot.title = element_text(face = "plain", size = 7.2, hjust = 0.5)), 
+								mRetina.scat.p + theme(legend.position = "none",
+																			 plot.title = element_text(face = "plain", size = 7.3, hjust = 0.5)), 
 								HeLa2.scat.p + theme(legend.position = "none"), 
 								ggplot() + theme_nothing(),
 								hipp.top2a.p + theme(legend.position = "none"), 
 								endo.top2a.p + theme(legend.position = "none"), 
 								mRetina.top2a.p + theme(legend.position = "none"), 
 								HeLa2.top2a.p + theme(legend.position = "none"), 
-								circle_scale_legend(text.size = 1.8, y.inner =  0.9, ymax = 4.5, y.outer = 2.1, y.text = 3.3),
+								ggplot() + theme_nothing(),
 								hipp.cyclic.p + theme(legend.position = "none"), 
 								endo.cyclic.p + theme(legend.position = "none"), 
 								mRetina.cyclic.p + theme(legend.position = "none"), 
 								HeLa2.cyclic.p + theme(legend.position = "none"), 
 								ggplot() + theme_nothing(),
-								nrow = 3, ncol = 5, rel_widths = c(1, 1, 1, 1, 0.45), labels = c("a", rep("", 4), "b", rep("", 4), "c", rep("", 4)))
+								nrow = 3, ncol = 5, rel_widths = c(1, 1, 1, 1, 0.7), labels = c("a", rep("", 4), "b", rep("", 4), "c", rep("", 4)),
+								label_size = 11)
 
+inset.p <- circle_scale_legend(text.size = 1.6, y.inner =  0.7, ymax = 4.5, y.outer = 2.1, y.text = 2.8, addStageLabel = TRUE)
 
-save_plot(here::here("figs", "main", "main.projections.pdf"), mp,
-					base_height = 2 / 1.40, base_width = 2*1.2 / (1.2*1.5), nrow = 3, ncol = 4.5, device = cairo_pdf)
+mp2 <- ggdraw(mp) +
+	draw_plot(inset.p, 0.715, 0.3, 0.4, 0.4, hjust = 0, vjust = 0, halign = 0, valign = 0)
+
+save_plot(here::here("figs", "main", "main.projections.pdf"), mp2,
+					base_height = 2 / 1.40, base_width = 2*1.2 / (1.2*1.5), nrow = 3 * 0.9, ncol = 4.5, device = cairo_pdf)
 
 

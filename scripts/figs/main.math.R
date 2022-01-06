@@ -28,18 +28,20 @@ a.p <- ggplot(tmp.df, aes(x = timepoints, y = exp, color = g)) +
 	scale_color_manual(values = c("#F29360", "#86BBD8"), labels = c("Gene 1", "Gene2"), name = "Gene") +
 	scale_x_continuous(breaks = c(0, 0.5, 1, 1.5, 2) * pi, labels = c(0, str_c(seq(0.5, 2, 0.5), "\u03C0")), limits = c(0, 2) * pi)  +
 	labs(title = "Unobserved", x = "Timepoint \u03B8", y = "Expression") +
-	theme(legend.position = c(0, 1),
-				legend.justification = c(0, 1),
-				legend.direction="horizontal",
+	theme(legend.position = c(1, 0),
+				legend.justification = c(1, 0),
+				# legend.direction="horizontal",
 				axis.title.y = element_text(size = 8),
-				axis.title.x = element_text(size = 8))
+				axis.title.x = element_text(size = 8),
+				legend.title = element_text(size = 6),
+				legend.text = element_text(size = 6))
 
 b.p <- ggplot(tmp.df, aes(x = pt, y = exp, color = g)) +
 	geom_scattermore(shape = 1, pointsize = 4.01, alpha = 0.7) +
 	scale_color_manual(values = c("#F29360", "#86BBD8"), labels = c("Gene 1", "Gene2"), name = "Gene") +
 	scale_x_continuous(breaks = c(0, 0.5, 1, 1.5, 2) * pi, labels = c(0, str_c(seq(0.5, 2, 0.5), "\u03C0")), limits = c(0, 2) * pi)  +
 	labs(title = "Observed", x = "Permuted timepoint \u03B8\'", y = "Expression") +
-	theme(legend.position = c(1, 1),
+	theme(legend.position = "none",
 				legend.justification = c(1, 1),
 				legend.direction="horizontal",
 				axis.title.y = element_text(size = 8),
@@ -78,7 +80,7 @@ d.p <- ggplot(tmp.df, aes(x = theta, y = exp, color = g)) +
 	scale_color_manual(values = c("#F29360", "#86BBD8"), labels = c("Gene 1", "Gene2"), name = "Gene") +
 	scale_x_continuous(breaks = c(0, 0.5, 1, 1.5, 2) * pi, labels = c(0, str_c(seq(0.5, 2, 0.5), "\u03C0")), limits = c(0, 2) * pi)  +
 	labs(title = "Recovered", x = expression(paste("Recoverd timepoint ", hat(theta))), y = "Expression") +
-	theme(legend.position = c(0, 1),
+	theme(legend.position = "none",
 				legend.justification = c(0, 1),
 				legend.direction="horizontal",
 				axis.title.y = element_text(size = 8),
